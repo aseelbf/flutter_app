@@ -23,7 +23,7 @@ class _PersonState extends State<Person> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.teal[400],
-          title: Text('Your Profile '),
+          title: Text('Your Profile'),
 
         ),
         body: ListView(
