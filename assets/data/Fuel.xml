@@ -1,0 +1,22 @@
+<data>
+    <Aseel>
+
+        <countryCode> Gasoline </countryCode>
+        <date>2020-10-19</date>
+        <currency>ILS</currency>
+        <gasoline>5.67</gasoline>
+
+    </Aseel>
+
+    <Aseel>
+
+        <countryCode> Diesel </countryCode>
+        <date>2020-10-19</date>
+        <currency>ILS</currency>
+        <gasoline>5.3865</gasoline>
+
+    </Aseel>
+
+
+
+</data>
