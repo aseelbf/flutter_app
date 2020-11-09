@@ -20,8 +20,7 @@ class _ProfileState extends State<Profile> {
 
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Profile", style: TextStyle(  letterSpacing: 2.0, fontFamily: 'Pacifico-Regular',),),
-          backgroundColor: Colors.teal[400]
+         backgroundColor: Colors.teal[400]
       ),
 
       body:Column(

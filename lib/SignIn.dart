@@ -163,7 +163,7 @@ class Sign_InClass extends State<SignIN> {
           decoration: const InputDecoration( icon: Icon(Icons.vpn_key),
               //hintStyle: TextStyle(height:7, fontWeight: FontWeight.bold),
               // hintText: 'please write a good password?',
-              labelText: 'password' ),
+              labelText: 'password *' ),
           keyboardType: TextInputType.visiblePassword,
           validator: validatePassword,
           onSaved: (String val) {
