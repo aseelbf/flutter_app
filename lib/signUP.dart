@@ -37,7 +37,7 @@ class _signUPState extends State<signUP>
   {
     print("hi");
     //var url = "https://10.0.2.1//flutter_app/GP_database.php";
-    var url = "https://192.168.2.76/flutter_app/GP_database.php";
+    var url = "https://192.168.1.120/flutter_app/GP_database.php";
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
         (X509Certificate cert, localhost, int port) => true;
@@ -165,11 +165,25 @@ class _signUPState extends State<signUP>
         ),
         //======================================================================
         new TextFormField(
+          obscureText: true,
           controller: passw,
           decoration: const InputDecoration( icon: Icon(Icons.lock),
               //hintStyle: TextStyle(height:7, fontWeight: FontWeight.bold),
               hintText: 'please write a good password?',
               labelText: 'password' ),
+          keyboardType: TextInputType.phone,
+          validator: validatePassword,
+          onSaved: (String val) {
+            _Pass = val;
+          },
+        ),
+
+        new TextFormField(
+          //controller: passw,
+          decoration: const InputDecoration( icon: Icon(Icons.account_box),
+              //hintStyle: TextStyle(height:7, fontWeight: FontWeight.bold),
+              hintText: '?',
+              labelText: 'Personal ID number' ),
           keyboardType: TextInputType.phone,
           validator: validatePassword,
           onSaved: (String val) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutterapp/ConfirmCode.dart';
 import 'dart:async';
 import 'MyMap.dart';
 import 'Profile.dart';
@@ -8,6 +9,8 @@ import 'SignIn.dart';
 import 'package:xml/xml.dart' as xml;
 import 'Fuel.dart';
 import 'Person.dart';
+import 'ChangePassword.dart';
+import 'ConfirmCode.dart';
 
 void main() => runApp(MaterialApp(
 
@@ -20,6 +23,8 @@ void main() => runApp(MaterialApp(
     '/signUP' : (context)=> signUP(),
     '/SignIn' : (context)=> SignIN(),
     '/Person' : (context)=> Person(),
+    '/Change': (context)=> ChangePassword(),
+    '/Confirm': (context)=> ConfirmCode(),
   },
 ));
 

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'SignUP.dart';
 import 'Person.dart';
 import 'dart:async';
 import 'package:http/io_client.dart';
 import 'dart:io';
+
 
 void main() {
   runApp(MaterialApp(
@@ -23,13 +23,13 @@ class SignIN extends StatefulWidget {
 
 class Sign_InClass extends State<SignIN> {
 
-  Future navigateToSubPage(context) async
+  /*Future navigateToSubPage(context) async
   {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return signUP();
     }
     ));
-  }
+  }*/
 
   TextEditingController usern = TextEditingController();
   TextEditingController passw = TextEditingController();
@@ -38,7 +38,7 @@ class Sign_InClass extends State<SignIN> {
 
   Future login () async
   {
-    var url = "https://192.168.2.76/flutter_app/login.php";
+    var url = "https://192.168.1.120/flutter_app/login.php";
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
         (X509Certificate cert, localhost, int port) => true;
@@ -159,6 +159,7 @@ class Sign_InClass extends State<SignIN> {
         ),
         //======================================================================
         new TextFormField(
+          obscureText: true,
           controller: passw,
           decoration: const InputDecoration( icon: Icon(Icons.vpn_key),
               //hintStyle: TextStyle(height:7, fontWeight: FontWeight.bold),
@@ -182,18 +183,41 @@ class Sign_InClass extends State<SignIN> {
                   ),
                   onPressed: () {
 
-                    navigateToSubPage(context);
+                    Navigator.pushNamed(context,'/signUP');
                   },
 
 
-                )
+                ),
+
+
               ],
               mainAxisAlignment: MainAxisAlignment.center,
             )),
         //======================================================================
         new SizedBox(
-          height: 10.0,
+          height: 1,
         ),
+        Container(
+    child: Row(
+    children: <Widget>[
+        Text("Forget your Password?"),
+        FlatButton(
+          textColor: Colors.teal,
+
+          child: Text(
+            'Reset ',
+          ),
+          onPressed: ()
+          {
+            Navigator.pushNamed(context,'/Confirm');
+
+          },
+
+
+        ),
+    ],
+    mainAxisAlignment: MainAxisAlignment.center,
+    )),
         new RaisedButton(
           onPressed:()
           {
@@ -237,25 +261,3 @@ class Sign_InClass extends State<SignIN> {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//==============================================================================
-
-//============================================================================== Sign up class :)
