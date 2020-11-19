@@ -45,14 +45,14 @@ class _PersonState extends State<Person> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      CircleAvatar(
+                    /*  CircleAvatar(
                         backgroundColor: Colors.teal[400],
                         minRadius: 35.0,
                         child: Icon(
                           Icons.call,
                           size: 50.0,
                         ),
-                      ),
+                      ),*/
                       CircleAvatar(
 
                         minRadius: 60.0,
@@ -127,6 +127,7 @@ class _PersonState extends State<Person> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                     subtitle: Text(
                       'This will take from database',
                       style: TextStyle(
@@ -144,6 +145,7 @@ class _PersonState extends State<Person> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                     subtitle: Text(
                       'This will take from database',
                       style: TextStyle(
