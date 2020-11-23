@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' ;
-import 'dart:async';
-import 'MyMap.dart';
-import 'Profile.dart';
+
 
 void main() {
   runApp(Person());
@@ -17,6 +14,41 @@ class Person extends StatefulWidget {
 }
 
 class _PersonState extends State<Person> {
+
+  List usersList = List();
+  getAllUsers ()async
+  {
+    var response= await http.get("url");
+    if (response.statusCode==200)
+      {
+        setState(()
+        {
+          usersList=json.decode(response.body);
+        });
+      }
+    return usersList;
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAllUsers();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
   void handleClick(String value) {
     switch (value) {
       case 'Logout':
