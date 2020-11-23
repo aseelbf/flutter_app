@@ -17,15 +17,40 @@ class Person extends StatefulWidget {
 }
 
 class _PersonState extends State<Person> {
-
+  void handleClick(String value) {
+    switch (value) {
+      case 'Logout':
+        break;
+      case 'Settings':
+        Navigator.pushNamed(context,'/Settings');
+        break;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.teal[400],
           title: Text('Your Profile'),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: handleClick,
+              itemBuilder: (BuildContext context) {
+                return {'Logout', 'Settings'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
+
 
         ),
+
+
+
         body: ListView(
           children: <Widget>[
             Container(

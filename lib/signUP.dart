@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/io_client.dart';
@@ -37,7 +36,7 @@ class _signUPState extends State<signUP>
   {
     print("hi");
     //var url = "https://10.0.2.1//flutter_app/GP_database.php";
-    var url = "https://192.168.1.120/flutter_app/GP_database.php";
+    var url = "https://192.168.10.26/flutter_app/GP_database.php";
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
         (X509Certificate cert, localhost, int port) => true;

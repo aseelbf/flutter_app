@@ -11,6 +11,7 @@ import 'Fuel.dart';
 import 'Person.dart';
 import 'ChangePassword.dart';
 import 'ConfirmCode.dart';
+import 'Settings.dart';
 
 void main() => runApp(MaterialApp(
 
@@ -25,6 +26,7 @@ void main() => runApp(MaterialApp(
     '/Person' : (context)=> Person(),
     '/Change': (context)=> ChangePassword(),
     '/Confirm': (context)=> ConfirmCode(),
+    '/Settings':(context)=>SettingsScreen(),
   },
 ));
 
