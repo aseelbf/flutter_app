@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'signUP.dart';
 import 'SignIn.dart';
@@ -13,8 +14,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
 
 
-
-    int _currentIndex_=2;
+    int CurrentIndex_= 2;
     // TODO: implement build
     return Scaffold(
 
@@ -119,7 +119,49 @@ class _ProfileState extends State<Profile> {
         ],
       ),
 
+      bottomNavigationBar: CurvedNavigationBar(
+        animationCurve: Curves.easeInCirc,
+        color: Colors.teal[400],
+        backgroundColor: Colors.grey[300],
+        animationDuration: Duration(
+            milliseconds: 100
+        ),
+        height: 60,
 
+        index: CurrentIndex_,
+        items: <Widget> [
+          IconButton(icon: Icon(Icons.location_on) , iconSize:35, focusColor: Colors.grey[300],
+              onPressed:()
+              {
+                Navigator.pushNamed(context,'/Map');
+
+              }),
+
+
+          IconButton(icon: Icon(Icons.home), iconSize:35, focusColor: Colors.grey[300],
+              onPressed:()
+              {
+                Navigator.pushNamed(context,'/home');
+
+              }),
+
+          IconButton(icon: Icon(Icons.person_outline), iconSize:35, focusColor: Colors.grey[300],
+              onPressed:()
+              {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
+
+              }),
+
+        ],
+        onTap: (index){
+          setState(()
+          {
+            CurrentIndex_=index;
+
+          } );
+        },
+
+      ),
     );
   }
 }

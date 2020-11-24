@@ -27,14 +27,6 @@ class SignIN extends StatefulWidget {
 
 class Sign_InClass extends State<SignIN> {
 
-//************** SESSION PART*************************//
-
-
-
-
-
-
-
 
 
   TextEditingController usern = TextEditingController();
@@ -109,9 +101,10 @@ preferences.setString('username', usern.text);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
-    return new MaterialApp(
-      home: new Scaffold(
+    return  new Scaffold(
+        resizeToAvoidBottomPadding: false,
         appBar: new AppBar(
+
           backgroundColor: Colors.teal,
           title: new RichText(
             text: TextSpan(
@@ -134,8 +127,8 @@ preferences.setString('username', usern.text);
             ),
           ),
         ),
-      ),
-    );
+      );
+
   }
 
 // Here is our Form UI

@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' ;
-
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,10 +28,6 @@ class _PersonState extends State<Person> {
       username= preferences.getString('username');
     });
   }
-
-
-
-
 
 
 
@@ -66,15 +60,6 @@ class _PersonState extends State<Person> {
     getAllUsers();
     getUsername();
   }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -155,7 +140,7 @@ class _PersonState extends State<Person> {
                     ],
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 12,
                   ),
                   RichText(
                     text: TextSpan(
@@ -177,6 +162,7 @@ class _PersonState extends State<Person> {
 
                   Expanded(
                     child: Container(
+
                       color: Colors.teal[200],
                       child: ListTile(
                         title: Text(
@@ -206,6 +192,7 @@ class _PersonState extends State<Person> {
               child: Column(
                 children: <Widget>[
                   ListTile(
+
                     title: Text(
                       'Name',
                       style: TextStyle(

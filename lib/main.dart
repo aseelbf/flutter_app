@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutterapp/ConfirmCode.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/io_client.dart';
 import 'dart:async';
 import 'MyMap.dart';
 import 'Profile.dart';
@@ -40,6 +44,55 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home>
 {
+  TextEditingController SearchController = TextEditingController();
+//*********************************************************************
+  Future Search () async
+  {
+    var url = "https://192.168.10.26/flutter_app/Search.php";
+
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, localhost, int port) => true;
+    final http = new IOClient(ioc);
+    var response = await http.post(Uri.parse(url), body:{
+
+
+      "carnumber" :SearchController.text,
+    });
+
+
+    var data =json.decode(response.body);
+
+    if (data == "Success")
+    {
+
+
+      Fluttertoast.showToast(msg: "car number exist !",
+          toastLength:Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+
+    }
+    else
+    {
+      Fluttertoast.showToast(msg: "car number is not exist!",
+          toastLength:Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+
+    }
+
+  }
+
+
   int CurrentIndex_= 1;
   //****************************************************************************************************************************************************
 
@@ -94,7 +147,7 @@ class _HomeState extends State<Home>
             Container(
               padding: EdgeInsets.all(10),
               child: TextField(
-                //controller: nameController,
+                controller: SearchController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Car Number To Search',
@@ -109,7 +162,7 @@ class _HomeState extends State<Home>
                   color: Colors.teal,
                   child: Text('Search'),
                   onPressed: () {
-                    // print(nameController.text);
+                    Search();
                   },
                 )),
             SizedBox(height:22.0),
