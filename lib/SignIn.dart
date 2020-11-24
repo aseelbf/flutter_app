@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Person.dart';
 import 'dart:async';
 import 'package:http/io_client.dart';
 import 'dart:io';
 
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences preferences=await SharedPreferences.getInstance();
+  var username= preferences.getString('username');
   runApp(MaterialApp(
-    home: SignIN(),
+    home: username==null? SignIN() :Person(),
   ));
 }
 //======================= main class ==================
@@ -23,13 +27,15 @@ class SignIN extends StatefulWidget {
 
 class Sign_InClass extends State<SignIN> {
 
-  /*Future navigateToSubPage(context) async
-  {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return signUP();
-    }
-    ));
-  }*/
+//************** SESSION PART*************************//
+
+
+
+
+
+
+
+
 
   TextEditingController usern = TextEditingController();
   TextEditingController passw = TextEditingController();
@@ -56,6 +62,8 @@ class Sign_InClass extends State<SignIN> {
 
     if (data == "Success")
     {
+SharedPreferences preferences=await SharedPreferences.getInstance();
+preferences.setString('username', usern.text);
 
 
 

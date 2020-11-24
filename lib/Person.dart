@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' ;
+
+import 'package:http/io_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
@@ -15,10 +20,33 @@ class Person extends StatefulWidget {
 
 class _PersonState extends State<Person> {
 
+  String username="";
+  Future getUsername() async
+  {
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+
+    setState(()
+    {
+      username= preferences.getString('username');
+    });
+  }
+
+
+
+
+
+
+
   List usersList = List();
   getAllUsers ()async
   {
-    var response= await http.get("url");
+    var url = "https://192.168.10.26/flutter_app/Allusers.php";
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, localhost, int port) => true;
+    final http = new IOClient(ioc);
+    var response = await http.get(Uri.parse(url));
+
     if (response.statusCode==200)
       {
         setState(()
@@ -26,15 +54,17 @@ class _PersonState extends State<Person> {
           usersList=json.decode(response.body);
         });
       }
+    print(usersList);
     return usersList;
 
   }
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     getAllUsers();
+    getUsername();
   }
 
 
@@ -185,8 +215,8 @@ class _PersonState extends State<Person> {
                       ),
                     ),
 
-                    subtitle: Text(
-                      'This will take from database',
+                    subtitle:  Text(username ,
+
                       style: TextStyle(
                         fontSize: 18,
                       ),
