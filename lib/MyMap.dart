@@ -55,10 +55,6 @@ class _MyMapState extends State<MyMap> {
   }
 
 
-  
-
-
-
 _onMapCreated(GoogleMapController controller)
 {
   _controller.complete(controller);

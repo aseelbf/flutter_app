@@ -58,17 +58,20 @@ class _HomeState extends State<Home>
 //*********************************************************************
   Future getFlag() async
   {
-    SharedPreferences preferences=await SharedPreferences.getInstance();
-
-    setState(()
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      SignedIn = preferences.getString('SignedIn');
+      print(
+          "I'm your flag in getFlag function in the main class : " + SignedIn);
+    }
+    catch(Exception)
     {
-      SignedIn= preferences.getString('SignedIn');
-      print ( "I'm your flag in getFlag function in the main class : "+ SignedIn);
-    });
+      print ("M3lish");
+    }
 
   }
 //******************************************************
-  Future KeepFlag() async
+  Future keepFlag() async
   {
     SharedPreferences preferences=await SharedPreferences.getInstance();
     preferences.setString('SignedIn', SignedIn);
@@ -147,7 +150,7 @@ class _HomeState extends State<Home>
 
     super.initState();
     getFlag();
-    KeepFlag();
+    keepFlag();
   }
 
   //**********************************************************

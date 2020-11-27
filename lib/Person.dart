@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/Profile.dart';
 import 'package:flutterapp/main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' ;
@@ -39,6 +40,17 @@ class _PersonState extends State<Person> {
       SignedIn= preferences.getString('SignedIn');
     });
   }
+
+
+  //logout Function:
+  Future Logout () async
+  {
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+    preferences.remove('username');
+    preferences.remove('SignedIn');
+    Navigator.pushNamed(context,'/home');
+  }
+
 
 
 
@@ -92,25 +104,17 @@ class _PersonState extends State<Person> {
      getUsername();
      getAllUsers();
 
-   // getInfo();
   }
 
 
- /* void getInfo()
-  {
-    for (int i=0; i< usersList.length;i++)
-    {
-      //if (usersList[i]['username']=="aseel")
-        print("Hi "+ usersList[i]['username']);
 
-    }
-  }*/
 
 
 
   void handleClick(String value) {
     switch (value) {
       case 'Logout':
+        Logout();
         break;
       case 'Settings':
         Navigator.pushNamed(context,'/Settings');
