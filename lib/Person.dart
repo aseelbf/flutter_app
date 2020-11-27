@@ -19,6 +19,8 @@ class Person extends StatefulWidget {
 class _PersonState extends State<Person> {
 
   String username="";
+  String car="";
+  String phone="";
   Future getUsername() async
   {
     SharedPreferences preferences=await SharedPreferences.getInstance();
@@ -46,6 +48,18 @@ class _PersonState extends State<Person> {
         setState(()
         {
           usersList=json.decode(response.body);
+          for (int i=0; i< usersList.length;i++)
+          {
+            if (usersList[i]['username']==username)
+            {
+              print("Hi "+ usersList[i]['username']);
+              car=usersList[i]['carnumber'];
+              phone=usersList[i]['mobilenumber'];
+
+            }
+
+          }
+
         });
       }
     print(usersList);
@@ -53,14 +67,29 @@ class _PersonState extends State<Person> {
 
   }
 
+
+
+
   @override
   void initState() {
 
     super.initState();
-    getAllUsers();
-    getUsername();
+     getUsername();
+     getAllUsers();
+
+   // getInfo();
   }
 
+
+ /* void getInfo()
+  {
+    for (int i=0; i< usersList.length;i++)
+    {
+      //if (usersList[i]['username']=="aseel")
+        print("Hi "+ usersList[i]['username']);
+
+    }
+  }*/
 
 
 
@@ -166,7 +195,7 @@ class _PersonState extends State<Person> {
                       color: Colors.teal[200],
                       child: ListTile(
                         title: Text(
-                          'Welcome ',
+                          'Welcome ' + username.toUpperCase()+"!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -206,6 +235,7 @@ class _PersonState extends State<Person> {
 
                       style: TextStyle(
                         fontSize: 18,
+                        fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
@@ -221,9 +251,10 @@ class _PersonState extends State<Person> {
                     ),
 
                     subtitle: Text(
-                      'This will take from database',
+                      car,
                       style: TextStyle(
                         fontSize: 18,
+                          fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -238,9 +269,10 @@ class _PersonState extends State<Person> {
                       ),
                     ),
                     subtitle: Text(
-                      'This will take from database',
+                      phone,
                       style: TextStyle(
                         fontSize: 18,
+                          fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),

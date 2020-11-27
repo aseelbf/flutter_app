@@ -7,7 +7,7 @@ echo "Database connection failed";
 
 $carnumber= $_POST['carnumber'];
 
-$sql = "SELECT * FROM users WHERE carnumber = '".$carnumber."' " ;
+$sql = "SELECT `username`, `mobilenumber` FROM users WHERE carnumber = '".$carnumber."' " ;
 
 $result = mysqli_query($db,$sql);
 $count = mysqli_num_rows($result);
