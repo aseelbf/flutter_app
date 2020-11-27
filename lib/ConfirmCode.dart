@@ -1,5 +1,10 @@
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/io_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmCode extends StatefulWidget {
 
@@ -8,6 +13,70 @@ class ConfirmCode extends StatefulWidget {
 }
 
 class _Confirm extends State<ConfirmCode> {
+String username="";
+String mobilenumber="";
+
+Future getInfo() async
+{
+  SharedPreferences preferences=await SharedPreferences.getInstance();
+
+  setState(()
+  {
+    username= preferences.getString('usernameConfirm');
+    print (username + " From getInfo function ");
+  });
+}
+
+//*************** ****************************************get all users function
+  List usersList = List();
+  getAllUsers ()async
+  {
+    var url = "https://192.168.10.26/flutter_app/Allusers.php";
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, localhost, int port) => true;
+    final http = new IOClient(ioc);
+    var response = await http.get(Uri.parse(url));
+
+    if (response.statusCode==200)
+    {
+      setState(()
+      {
+        usersList=json.decode(response.body);
+        for (int i=0; i< usersList.length;i++)
+        {
+          if (usersList[i]['username']==username)
+          {
+            print("I found your username");
+            mobilenumber=usersList[i]['mobilenumber'];
+            print("your mobile number is "+ mobilenumber);
+            break;
+
+          }
+
+
+        }
+
+      });
+
+    }
+    print(usersList);
+    return usersList;
+
+  }
+
+
+
+
+
+@override
+void initState() {
+
+  super.initState();
+  getInfo();
+  getAllUsers();
+
+}
 
 
   TextEditingController nameController = TextEditingController();
@@ -31,11 +100,11 @@ class _Confirm extends State<ConfirmCode> {
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(55),
                     child: Text(
-                      'Write code here',
+                      "We have sent code to your number :" + "xxxxxxx" + mobilenumber.substring(7)+ ", Please enter it in the box below:",
                       style: TextStyle(
-                          color: Colors.teal[400],
+                          color: Colors.black,
                           fontWeight: FontWeight.w500,
-                          fontSize: 30),
+                          fontSize: 20),
                     )),
                 Container(
                   padding: EdgeInsets.all(10),

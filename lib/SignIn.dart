@@ -1,3 +1,4 @@
+import 'package:flutterapp/ConfirmCode.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,8 +16,10 @@ void main() async{
   SharedPreferences preferences=await SharedPreferences.getInstance();
   var username= preferences.getString('username');
   var SignedIn= preferences.getString('SignedIn');
+
   runApp(MaterialApp(
     home: username==null || SignedIn==null ? SignIN() :Person(),
+
   ));
 }
 //======================= main class ==================
@@ -29,6 +32,7 @@ class SignIN extends StatefulWidget {
 class Sign_InClass extends State<SignIN> {
 
 String SignedIn;
+String userForConfirm;
 
   TextEditingController usern = TextEditingController();
   TextEditingController passw = TextEditingController();
@@ -211,8 +215,12 @@ preferences.setString('SignedIn', SignedIn);
           child: Text(
             'Reset ',
           ),
-          onPressed: ()
+          onPressed: () async
           {
+            userForConfirm = usern.text;
+            print(userForConfirm +" In RESET button");
+            SharedPreferences preferences=await SharedPreferences.getInstance();
+            preferences.setString('usernameConfirm', userForConfirm);
             Navigator.pushNamed(context,'/Confirm');
 
           },
