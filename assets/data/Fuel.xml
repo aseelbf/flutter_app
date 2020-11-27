@@ -2,18 +2,18 @@
     <Aseel>
 
         <countryCode> Gasoline </countryCode>
-        <date>2020-10-19</date>
+        <date>2020-11-23</date>
         <currency>ILS</currency>
-        <gasoline>5.67</gasoline>
+        <gasoline>5.550</gasoline>
 
     </Aseel>
 
     <Aseel>
 
         <countryCode> Diesel </countryCode>
-        <date>2020-10-19</date>
+        <date>2020-11-23</date>
         <currency>ILS</currency>
-        <gasoline>5.3865</gasoline>
+        <gasoline>5.273</gasoline>
 
     </Aseel>
 

@@ -1,13 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' ;
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-void main() {
-  runApp(Person());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences preferences=await SharedPreferences.getInstance();
+  var SignedIn= preferences.getString('SignedIn');
+  runApp(MaterialApp(
+    home: SignedIn==null? Person() : Home(),
+  ));
 }
 
 class Person extends StatefulWidget {
@@ -21,6 +27,8 @@ class _PersonState extends State<Person> {
   String username="";
   String car="";
   String phone="";
+  String SignedIn="";
+
   Future getUsername() async
   {
     SharedPreferences preferences=await SharedPreferences.getInstance();
@@ -28,6 +36,7 @@ class _PersonState extends State<Person> {
     setState(()
     {
       username= preferences.getString('username');
+      SignedIn= preferences.getString('SignedIn');
     });
   }
 
@@ -52,15 +61,21 @@ class _PersonState extends State<Person> {
           {
             if (usersList[i]['username']==username)
             {
-              print("Hi "+ usersList[i]['username']);
+              SignedIn="T";
+              print("Hi "+ usersList[i]['username'] +", Your flag is "+SignedIn);
               car=usersList[i]['carnumber'];
               phone=usersList[i]['mobilenumber'];
+              break;
 
             }
 
+           else
+             SignedIn="F";
           }
 
         });
+        SharedPreferences preferences=await SharedPreferences.getInstance();
+        preferences.setString('SignedIn', SignedIn);
       }
     print(usersList);
     return usersList;
@@ -104,8 +119,12 @@ class _PersonState extends State<Person> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new WillPopScope(
+      onWillPop: () async =>false,
+        child: new Scaffold(
         appBar: AppBar(
+          leading: new IconButton(icon: new Icon(Icons.arrow_back),
+              onPressed:() { Navigator.of(context).pushNamed('/home');}),
           backgroundColor: Colors.teal[400],
           title: Text('Your Profile'),
           actions: <Widget>[
@@ -120,6 +139,7 @@ class _PersonState extends State<Person> {
                 }).toList();
               },
             ),
+
           ],
 
 
@@ -282,7 +302,7 @@ class _PersonState extends State<Person> {
           ],
         ),
 
-      );
+      ));
 
   }
 }

@@ -5,6 +5,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutterapp/ConfirmCode.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/io_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'MyMap.dart';
 import 'Profile.dart';
@@ -17,9 +18,15 @@ import 'ChangePassword.dart';
 import 'ConfirmCode.dart';
 import 'Settings.dart';
 
-void main() => runApp(MaterialApp(
+void main() async
+{
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences preferences=await SharedPreferences.getInstance();
+  var SignedIn= preferences.getString('SignedIn');
 
-  home: Home(),
+  runApp(MaterialApp(
+
+  home: SignedIn==null ? Home() :MyMap(),
   routes:
   {
     '/home': (context)=> Home(),
@@ -33,6 +40,7 @@ void main() => runApp(MaterialApp(
     '/Settings':(context)=>SettingsScreen(),
   },
 ));
+}
 
 
 
@@ -44,9 +52,29 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home>
 {
+  String SignedIn="Empty";
   String userr;
   TextEditingController SearchController = TextEditingController();
 //*********************************************************************
+  Future getFlag() async
+  {
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+
+    setState(()
+    {
+      SignedIn= preferences.getString('SignedIn');
+      print ( "I'm your flag in getFlag function in the main class : "+ SignedIn);
+    });
+
+  }
+//******************************************************
+  Future KeepFlag() async
+  {
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+    preferences.setString('SignedIn', SignedIn);
+  }
+
+  //**********************************************
   Future Search () async
   {
     var url = "https://192.168.10.26/flutter_app/Search.php";
@@ -114,8 +142,13 @@ class _HomeState extends State<Home>
 }
 
 
+  @override
+  void initState() {
 
-
+    super.initState();
+    getFlag();
+    KeepFlag();
+  }
 
   //**********************************************************
   @override
@@ -270,7 +303,11 @@ class _HomeState extends State<Home>
           IconButton(icon: Icon(Icons.person_outline), iconSize:35, focusColor: Colors.grey[300],
               onPressed:()
               {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
+                print (SignedIn);
+                if (SignedIn=="T")
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Person()));
+                else
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
 
               }),
 

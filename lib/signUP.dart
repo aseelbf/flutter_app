@@ -5,6 +5,20 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/io_client.dart';
 import 'Person.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences preferences=await SharedPreferences.getInstance();
+  var username= preferences.getString('username');
+  runApp(MaterialApp(
+    home: username==null? signUP() :Person(),
+  ));
+}
+
+
+
+
 
 
 
@@ -31,6 +45,7 @@ class _signUPState extends State<signUP>
   TextEditingController passw = TextEditingController();
   TextEditingController carn = TextEditingController();
   TextEditingController mobilen = TextEditingController();
+  TextEditingController idC = TextEditingController();
 
   Future register()  async
   {
@@ -47,6 +62,7 @@ class _signUPState extends State<signUP>
       "password": passw.text,
       "mobilenumber":mobilen.text,
       "carnumber":carn.text,
+      "ID":idC.text,
 
     });
     print(response);
@@ -64,6 +80,14 @@ class _signUPState extends State<signUP>
 
     }
     else if (data == "success"){
+
+      SharedPreferences preferences=await SharedPreferences.getInstance();
+      preferences.setString('username', usern.text);
+
+
+
+
+
       Fluttertoast.showToast(msg:"Registration success",toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb:1,
@@ -178,13 +202,13 @@ class _signUPState extends State<signUP>
         ),
 
         new TextFormField(
-          //controller: passw,
+          controller: idC,
           decoration: const InputDecoration( icon: Icon(Icons.account_box),
               //hintStyle: TextStyle(height:7, fontWeight: FontWeight.bold),
-              hintText: '?',
+              hintText: 'Identity Number 9digits',
               labelText: 'Personal ID number' ),
           keyboardType: TextInputType.phone,
-          validator: validatePassword,
+          validator: validateID,
           onSaved: (String val) {
             _Pass = val;
           },
@@ -237,6 +261,18 @@ class _signUPState extends State<signUP>
       return null;
   }
   //======================================================================
+
+  String validateID(String value) {
+    if (value.length < 9)
+      return 'ID number must be 9 digits only';
+    else
+      return null;
+  }
+  //=====================================================
+
+
+
+
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
 //    If all data are correct then save data to out variables

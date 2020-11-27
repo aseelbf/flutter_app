@@ -9,7 +9,7 @@ $username= $_POST['username'];
 $password= $_POST['password'];
 $mobilenumber= $_POST['mobilenumber']; 
 $carnumber= $_POST['carnumber'];
-
+$ID=$_POST['ID'];
 
 $sql = "SELECT * FROM users WHERE username = '".$username."' " ;
 
@@ -21,7 +21,7 @@ if($count == 1 ){
 }
 else 
 {
-$insert= "INSERT INTO users(username,password,mobilenumber,carnumber)VALUES('".$username."','".$password."' , '".$mobilenumber."' , '".$carnumber."')";
+$insert= "INSERT INTO users(username,password,mobilenumber,carnumber,ID)VALUES('".$username."','".$password."' , '".$mobilenumber."' , '".$carnumber."', '".$ID."')";
 
 	$query= mysqli_query($db,$insert);
 	if($query)

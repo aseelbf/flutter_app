@@ -14,8 +14,9 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences=await SharedPreferences.getInstance();
   var username= preferences.getString('username');
+  var SignedIn= preferences.getString('SignedIn');
   runApp(MaterialApp(
-    home: username==null? SignIN() :Person(),
+    home: username==null || SignedIn==null ? SignIN() :Person(),
   ));
 }
 //======================= main class ==================
@@ -27,7 +28,7 @@ class SignIN extends StatefulWidget {
 
 class Sign_InClass extends State<SignIN> {
 
-
+String SignedIn;
 
   TextEditingController usern = TextEditingController();
   TextEditingController passw = TextEditingController();
@@ -54,8 +55,10 @@ class Sign_InClass extends State<SignIN> {
 
     if (data == "Success")
     {
+      SignedIn="T";
 SharedPreferences preferences=await SharedPreferences.getInstance();
 preferences.setString('username', usern.text);
+preferences.setString('SignedIn', SignedIn);
 
 
 

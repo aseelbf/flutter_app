@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'Person.dart';
 import 'Profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,6 +14,26 @@ class MyMap extends StatefulWidget{
 }
 
 class _MyMapState extends State<MyMap> {
+  String SignedIn="Empty flag";
+
+  Future getFlag() async
+  {
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+
+    setState(()
+    {
+      SignedIn= preferences.getString('SignedIn');
+      print ( "I'm your flag in getFlag function in MyMap class : "+ SignedIn);
+    });
+  }
+
+
+  @override
+  void initState() {
+
+    super.initState();
+    getFlag();
+  }
 
   Completer <GoogleMapController> _controller = Completer();
   static const LatLng _center = const LatLng(32.215996, 35.259131);
@@ -170,7 +192,11 @@ return FloatingActionButton(
         IconButton(icon: Icon(Icons.person_outline), iconSize:35, focusColor: Colors.grey[300],
             onPressed:()
             {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
+              print(SignedIn);
+              if (SignedIn=="T")
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Person()));
+              else
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
 
             }),
 
