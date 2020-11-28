@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutterapp/ConfirmCode.dart';
+import 'package:flutterapp/SplashScreen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'Driver.dart';
 import 'MyMap.dart';
 import 'Profile.dart';
 import 'signUP.dart';
@@ -54,6 +56,7 @@ class _HomeState extends State<Home>
 {
   String SignedIn="Empty";
   String userr;
+
   TextEditingController SearchController = TextEditingController();
 //*********************************************************************
   Future getFlag() async
@@ -61,6 +64,7 @@ class _HomeState extends State<Home>
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       SignedIn = preferences.getString('SignedIn');
+
       print(
           "I'm your flag in getFlag function in the main class : " + SignedIn);
     }
@@ -71,6 +75,7 @@ class _HomeState extends State<Home>
 
   }
 //******************************************************
+
   Future keepFlag() async
   {
     SharedPreferences preferences=await SharedPreferences.getInstance();
@@ -99,27 +104,12 @@ class _HomeState extends State<Home>
     if (data == "Success")
     {
 
-
-      Fluttertoast.showToast(msg: "car number exist !" ,
-          toastLength:Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+   showAlertDialogExist(context);
 
     }
     else
     {
-      Fluttertoast.showToast(msg: "car number is not exist!",
-          toastLength:Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      showAlertDialogNotExist(context);
 
     }
 
@@ -128,8 +118,74 @@ class _HomeState extends State<Home>
 
   int CurrentIndex_= 1;
   //****************************************************************************************************************************************************
+  showAlertDialogExist(BuildContext context) {
 
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  ()
+      {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Visit Profile"),
+      onPressed:  () async
+      {
+        SharedPreferences preferences=await SharedPreferences.getInstance();
+        preferences.setString('car', SearchController.text);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Driver()));
+      },
+    );
 
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(""),
+      content: Text("Owner found! , click Visit Profile to view more information"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+//***********************************************************************************
+  showAlertDialogNotExist(BuildContext context) {
+
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: ()
+      {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Driver not found"),
+      content: Text("Make sure that you typed a valid car number"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+//*************************************************************
   Future <List <Fuel>> getDataFromXML(BuildContext context) async
 {
   String xmlString = await DefaultAssetBundle.of(context).loadString("assets/data/Fuel.xml");
