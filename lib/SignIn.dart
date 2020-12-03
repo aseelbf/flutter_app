@@ -63,7 +63,7 @@ String userForConfirm;
 SharedPreferences preferences=await SharedPreferences.getInstance();
 preferences.setString('username', usern.text);
 preferences.setString('SignedIn', SignedIn);
-
+preferences.setString('password', passw.text);
 
 
 

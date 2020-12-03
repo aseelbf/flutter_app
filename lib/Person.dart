@@ -29,6 +29,7 @@ class _PersonState extends State<Person> {
   String car="";
   String phone="";
   String SignedIn="";
+  String password="";
 
   Future getUsername() async
   {
@@ -38,6 +39,7 @@ class _PersonState extends State<Person> {
     {
       username= preferences.getString('username');
       SignedIn= preferences.getString('SignedIn');
+      password=preferences.getString('password');
     });
   }
 
@@ -48,6 +50,7 @@ class _PersonState extends State<Person> {
     SharedPreferences preferences=await SharedPreferences.getInstance();
     preferences.remove('username');
     preferences.remove('SignedIn');
+    preferences.remove('password');
     Navigator.pushNamed(context,'/home');
   }
 
@@ -111,12 +114,17 @@ class _PersonState extends State<Person> {
 
 
 
-  void handleClick(String value) {
+  void handleClick(String value) async{
     switch (value) {
       case 'Logout':
         Logout();
         break;
       case 'Settings':
+        SharedPreferences preferences=await SharedPreferences.getInstance();
+        preferences.setString('mobilenumber', phone);
+        preferences.setString('carnumber', car);
+        preferences.setString('password', password);
+        preferences.setString('username', username);
         Navigator.pushNamed(context,'/Settings');
         break;
     }
