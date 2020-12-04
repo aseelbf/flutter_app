@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter_session: ^0.1.1
 
-
+  url_launcher: ^5.7.6
   settings_ui: ^0.4.0
 
   xml: ^4.5.1

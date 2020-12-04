@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' ;
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 
 
@@ -125,11 +125,21 @@ class _DriverState extends State<Driver> {
                         CircleAvatar(
                         backgroundColor: Colors.teal[400],
                         minRadius: 35.0,
-                        child: Icon(
-                          Icons.call,
-                          size: 50.0,
+                        child: IconButton(
+                          icon: Icon(Icons.call),
+                          color: Colors.white,
+                          iconSize: 50,
+                          onPressed: ()
+                          {
+                            launch("tel://"+phone);
+                          },
                         ),
                       ),
+                        /*IconButton(
+                          icon: Icon(Icons.call),
+                          color: Colors.teal[400],
+                          onPressed: () {},
+                        ),*/
                         CircleAvatar(
 
                           minRadius: 60.0,

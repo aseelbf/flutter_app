@@ -30,6 +30,34 @@ class signUP extends StatefulWidget{
 class _signUPState extends State<signUP>
 
 {
+  showAlertDialogNotExist(BuildContext context) {
+
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: ()
+      {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Error"),
+      content: Text("This car number doesn't belong to the entered ID number"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
 
 //  _formKey and _autoValidate
@@ -273,10 +301,33 @@ class _signUPState extends State<signUP>
 
 
 
-  void _validateInputs() {
+  void _validateInputs() async {
     if (_formKey.currentState.validate()) {
 //    If all data are correct then save data to out variables
-      register();
+
+
+      var url = "https://192.168.10.26/flutter_app/Authenticate.php";
+      final ioc = new HttpClient();
+      ioc.badCertificateCallback =
+          (X509Certificate cert, localhost, int port) => true;
+      final http = new IOClient(ioc);
+      var response = await http.post(Uri.parse(url), body:{
+
+        "ID": idC.text,
+        "carnumber":carn.text,
+      });
+
+
+      var data =json.decode(response.body);
+
+      if (data == "Success")
+      {
+        register();
+      }
+      else
+        {
+          showAlertDialogNotExist(context);
+        }
       _formKey.currentState.save();
     } else {
 //    If all data are not valid then start auto validation.
