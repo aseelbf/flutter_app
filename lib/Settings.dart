@@ -6,9 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 
-
-
-
 class SettingsScreen extends StatefulWidget {
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -30,8 +27,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
      mobile= preferences.getString('mobilenumber');
      car=preferences.getString('carnumber');
      password=preferences.getString('password');
-    if(password.isEmpty)
-      print ("the password is empty");
       print("I get your info "+username +', '+ mobile +', '+ car+' ,'+ password);
 
   }
@@ -89,7 +84,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SettingsTile(title: 'Personal information',subtitle: 'change information',
                   onTap:() async
                   {
-
+                    SharedPreferences preferences=await SharedPreferences.getInstance();
+                    preferences.setString('mobilenumber', mobile);
+                    preferences.setString('carnumber', car);
+                    preferences.setString('username', username);
+                    print("I took username from settings to personal settings "+ username);
+                    Navigator.pushNamed(context,'/edit');
                   }, leading: Icon(Icons.person)
               ),
               SettingsTile(title: 'password',subtitle: 'change password',

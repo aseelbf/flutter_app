@@ -331,7 +331,7 @@ class _signUPState extends State<signUP>
       _formKey.currentState.save();
     } else {
 //    If all data are not valid then start auto validation.
-      setState(() {
+         setState(() {
         _autoValidate = true;
       });
     }

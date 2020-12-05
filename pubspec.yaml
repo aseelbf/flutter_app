@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  slide_button: ^0.2.8
   flutter_session: ^0.1.1
 
   url_launcher: ^5.7.6

@@ -37,6 +37,7 @@ class _PersonState extends State<Person> {
 
     setState(()
     {
+
       username= preferences.getString('username');
       SignedIn= preferences.getString('SignedIn');
       password=preferences.getString('password');
@@ -96,8 +97,6 @@ class _PersonState extends State<Person> {
     return usersList;
 
   }
-
-
 
 
   @override
