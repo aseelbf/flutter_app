@@ -285,7 +285,6 @@ class _HomeState extends State<Home> {
             ),
 
 //*************************************************************************************
-
             Container(
               padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
               child: SlideButton(
