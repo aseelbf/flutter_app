@@ -49,6 +49,7 @@ class _EditInfoState extends State<EditInfo> {
           child: ListView(children: <Widget>[
             ListTile(
               leading: IconButton(
+
                 icon: Icon(Icons.edit),
                 onPressed: ()
                 {

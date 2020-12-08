@@ -41,7 +41,7 @@ class _ChangePassword extends State<ChangePassword> {
   }
 
   getAllUsers() async {
-    var url = "https://192.168.10.26/flutter_app/Allusers.php";
+    var url = "https://192.168.10.31/flutter_app/Allusers.php";
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
         (X509Certificate cert, localhost, int port) => true;
@@ -49,6 +49,7 @@ class _ChangePassword extends State<ChangePassword> {
     var response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
+      if (this.mounted)
       setState(() {
         usersList = json.decode(response.body);
         for (int i = 0; i < usersList.length; i++) {
@@ -149,7 +150,7 @@ class _ChangePassword extends State<ChangePassword> {
                                 ConfirmpasswordController.text)
                         {
                           var url =
-                              "https://192.168.10.26/flutter_app/ResetPassword.php";
+                              "https://192.168.10.31/flutter_app/ResetPassword.php";
                           final ioc = new HttpClient();
                           ioc.badCertificateCallback =
                               (X509Certificate cert, localhost, int port) =>

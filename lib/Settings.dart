@@ -56,27 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: SettingsList(
         // backgroundColor: Colors.orange,
         sections: [
-          //  SettingsSection(
-          //    title: 'Common',
-          // titleTextStyle: TextStyle(fontSize: 30),
-          //    tiles: [
-          //      SettingsTile(
-          //      title: 'Language',
-          //     subtitle: 'English',
-          //     leading: Icon(Icons.language),
-          //     onTap: () {
-          //      Navigator.of(context).push(MaterialPageRoute(
-          //      ));
-          //    },
-          //    ),
-          //    SettingsTile(
-          //      title: 'Environment',
-          //      subtitle: 'Production',
-          //      leading: Icon(Icons.cloud_queue),
-          //      onTap: () => print('e'),
-          //    ),
-          //   ],
-          //  ),
+
           SettingsSection(
             title: 'Account Setting' ,
             titleTextStyle: TextStyle(fontSize: 30 ),

@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'signUP.dart';
 import 'SignIn.dart';
 
@@ -10,17 +11,37 @@ class Profile extends StatefulWidget{
 }
 
 class _ProfileState extends State<Profile> {
+  String SignedIn = "Empty";
   @override
   Widget build(BuildContext context) {
+
+    Future getFlag()async
+    {
+      SharedPreferences preferences= await SharedPreferences.getInstance();
+      SignedIn = preferences.getString('SignedIn');
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      getFlag();
+
+    }
+
 
 
     int CurrentIndex_= 2;
     // TODO: implement build
-    return Scaffold(
+    return new WillPopScope(
+        onWillPop: () async =>false,
+    child: new  Scaffold(
 
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-         backgroundColor: Colors.teal[400]
+          leading: new IconButton(icon: new Icon(Icons.arrow_back),
+              onPressed:() { Navigator.of(context).pushNamed('/home');}),
+
+          backgroundColor: Colors.teal[400]
       ),
 
       body:Column(
@@ -162,6 +183,6 @@ class _ProfileState extends State<Profile> {
         },
 
       ),
-    );
+    ));
   }
 }

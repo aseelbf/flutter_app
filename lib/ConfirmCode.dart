@@ -31,7 +31,7 @@ Future getInfo() async
   List usersList = List();
   getAllUsers ()async
   {
-    var url = "https://192.168.10.26/flutter_app/Allusers.php";
+    var url = "https://192.168.10.31/flutter_app/Allusers.php";
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
         (X509Certificate cert, localhost, int port) => true;

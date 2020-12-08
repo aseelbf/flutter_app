@@ -14,7 +14,7 @@ class MyMap extends StatefulWidget{
 }
 
 class _MyMapState extends State<MyMap> {
-  String SignedIn="Empty flag";
+  String SignedIn="Empty";
 
   Future getFlag() async
   {
@@ -23,8 +23,7 @@ class _MyMapState extends State<MyMap> {
     setState(()
     {
       SignedIn= preferences.getString('SignedIn');
-      print ( "I'm your flag in getFlag function in MyMap class : "+ SignedIn);
-    });
+       });
   }
 
 
@@ -33,6 +32,8 @@ class _MyMapState extends State<MyMap> {
 
     super.initState();
     getFlag();
+    print ( "I'm your flag in getFlag function in MyMap class : "+ SignedIn);
+
   }
 
   Completer <GoogleMapController> _controller = Completer();

@@ -5,6 +5,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutterapp/ConfirmCode.dart';
 import 'package:flutterapp/EditCar.dart';
 import 'package:flutterapp/EditPhone.dart';
+import 'package:flutterapp/Ticket.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -23,6 +25,8 @@ import 'ConfirmCode.dart';
 import 'Settings.dart';
 import 'EditPhone.dart';
 import 'EditCar.dart';
+import 'Ticket.dart';
+import 'License.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +48,8 @@ void main() async {
       '/edit': (context) => EditInfo(),
       '/EditMobile': (context) => EditPhone(),
       '/EditCar': (context) => EditCar(),
+      '/ticket': (context) => Ticket(),
+      '/license': (context) => License(),
     },
   ));
 }
@@ -56,19 +62,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String SignedIn = "Empty";
   String userr;
+  String username, ID;
+  bool TicketFlag;
+  String Title;
+  String ticketId;
+  Color color;
 
   TextEditingController SearchController = TextEditingController();
 //*********************************************************************
   Future getFlag() async {
-    try {
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      SignedIn = preferences.getString('SignedIn');
-
-      print(
-          "I'm your flag in getFlag function in the main class : " + SignedIn);
-    } catch (Exception) {
-      print("M3lish");
-    }
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    SignedIn = preferences.getString('SignedIn');
+    username = preferences.getString('username');
   }
 //******************************************************
 
@@ -79,7 +84,7 @@ class _HomeState extends State<Home> {
 
   //**********************************************
   Future Search() async {
-    var url = "https://192.168.10.26/flutter_app/Search.php";
+    var url = "https://192.168.10.31/flutter_app/Search.php";
 
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
@@ -166,6 +171,34 @@ class _HomeState extends State<Home> {
     );
   }
 
+  //***********************************************************
+  showAlertDialogNoTicket(BuildContext context) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("No Ticket"),
+      content: Text("Congrats :) , You have no tickets "),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 //*************************************************************
   Future<List<Fuel>> getDataFromXML(BuildContext context) async {
     String xmlString =
@@ -181,13 +214,53 @@ class _HomeState extends State<Home> {
     }).toList();
   }
 
+//********************
+  List usersList = List();
+  getAllUsers() async {
+    var url = "https://192.168.10.31/flutter_app/Allusers.php";
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, localhost, int port) => true;
+    final http = new IOClient(ioc);
+    var response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        usersList = json.decode(response.body);
+        for (int i = 0; i < usersList.length; i++) {
+          if (usersList[i]['username'] == username) {
+            SignedIn = "T";
+            print("Hi " +
+                usersList[i]['username'] +
+                ", Your flag is " +
+                SignedIn);
+            ID = usersList[i]['ID'];
+            break;
+          } else
+            SignedIn = "F";
+        }
+      });
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString('SignedIn', SignedIn);
+      preferences.setString('ID', ID);
+    }
+    //print(usersList);
+    return usersList;
+  }
+
+  //***********************************
   @override
   void initState() {
     super.initState();
     getFlag();
+    print(
+        "I'm your flag in initState function in the main class : " + SignedIn);
+
     keepFlag();
+    getAllUsers();
   }
 
+  int c = 0;
   //**********************************************************
   @override
   Widget build(BuildContext context) {
@@ -286,31 +359,161 @@ class _HomeState extends State<Home> {
 
 //*************************************************************************************
             Container(
-              padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
+              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
               child: SlideButton(
+                initialSliderPercentage: 0.15,
+                borderRadius: 60,
                 height: 64,
                 backgroundChild: Center(
-                  child: Text("Slide to right to Check ticket", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0),),
+                  child: Text(
+                    "Slide to the right to Check if  \n      you have traffic ticket",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
                 ),
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.white70,
                 slidingBarColor: Colors.teal[400],
                 slideDirection: SlideDirection.RIGHT,
                 slidingChild: Icon(Icons.directions_walk),
-                  shouldCloseBorders: true,
-                onButtonOpened: () {
+                shouldCloseBorders: false,
+                onButtonOpened: () async {
                   print("Opened");
-                  Navigator.pushNamed(context, '/Person');
+                  if (SignedIn == 'T') {
+                    print("I am the ID " + ID);
+                    var url = "https://192.168.10.31/flutter_app/ticket.php";
+
+                    final ioc = new HttpClient();
+                    ioc.badCertificateCallback =
+                        (X509Certificate cert, localhost, int port) => true;
+                    final http = new IOClient(ioc);
+                    var response = await http.post(Uri.parse(url), body: {
+                      "ID": ID,
+                    });
+
+                    var data = json.decode(response.body);
+
+                    if (data == "NoTicket") {
+                      TicketFlag = false;
+                      Title = "You have no Tickets";
+
+                      Fluttertoast.showToast(
+                          msg: Title,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.green,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+
+                      SharedPreferences preferences =
+                          await SharedPreferences.getInstance();
+                      preferences.setString('SignedIn', SignedIn);
+                      //preferences.setString('ID',ID);
+                      //preferences.setString('username', username);
+                      preferences.setBool('TicketFlag', TicketFlag);
+                      preferences.setString('Title', Title);
+
+                      Navigator.pushNamed(context, '/ticket');
+                    } else // if (data == "ThereIsTicket") //if user has a ticket:
+                    {
+                      TicketFlag = true;
+                      Title = "You have Ticket";
+
+
+                      Fluttertoast.showToast(
+                          msg: Title,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+
+                      SharedPreferences preferences =
+                          await SharedPreferences.getInstance();
+                      preferences.setString('SignedIn', SignedIn);
+                      preferences.setString('ID', ID);
+                      //preferences.setString('username', username);
+                      preferences.setBool('TicketFlag', TicketFlag);
+                      preferences.setString('Title', Title);
+
+
+                      Navigator.pushNamed(context, '/ticket');
+                    }
+                  } else //if not signed in
+                  {
+                    Fluttertoast.showToast(
+                        msg: "You must login first !",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    Navigator.pushNamed(context, '/Profile');
+                  }
+                } //onOpened
+                ,
+                onButtonClosed: () {
+                  print("closed");
+                },
+
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+              child: SlideButton(
+                initialSliderPercentage: 0.15,
+                borderRadius: 60,
+                height: 64,
+                backgroundChild: Center(
+                  child: Text(
+                    "  Slide to the LEFT to Check   \n      your license status",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+                backgroundColor: Colors.white70,
+                slidingBarColor: Colors.teal[400],
+                slideDirection: SlideDirection.LEFT,
+                slidingChild: Icon(Icons.credit_card),
+                shouldCloseBorders: false,
+                onButtonOpened: () async{
+                  print("Opened");
+                  if (SignedIn == 'T') // if user is signed in
+                   {
+                     SharedPreferences preferences = await SharedPreferences.getInstance();
+                     preferences.setString('SignedIn', SignedIn);
+                     preferences.setString('ID', ID);
+                     preferences.setString('username', username);
+                     Navigator.pushNamed(context, '/license');
+                   }
+                  else // user is not signed in
+                  {
+                    Fluttertoast.showToast(
+                        msg: "You must login first !",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    Navigator.pushNamed(context, '/Profile');
+                  }
                 },
                 onButtonClosed: () {
                   print("closed");
                 },
-                onButtonSlide: (value) {
-                  print(value.toString());
-                },
+
               ),
             ),
+            //***************************************************************************************************
 
-//***************************************************************************************
+
           ],
         ),
       ),
