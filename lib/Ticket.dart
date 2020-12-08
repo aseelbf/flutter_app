@@ -101,7 +101,7 @@ Future getTicketType() async
   @override
   void initState() {
     super.initState();
-    getInfo();
+    getInfo().then((value) => null);
     getAllTraffic();
     getTicketType();
     setState(() {
