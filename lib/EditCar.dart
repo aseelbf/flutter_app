@@ -92,7 +92,7 @@ class _EditCarState extends State<EditCar> {
                     child: FlatButton(
                         onPressed: () async {
                           var url =
-                              "https://192.168.10.31/flutter_app/EditCar.php";
+                              "https://10.0.2.2/flutter_app/EditCar.php";
                           final ioc = new HttpClient();
                           ioc.badCertificateCallback =
                               (X509Certificate cert, localhost, int port) =>

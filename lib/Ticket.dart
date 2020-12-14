@@ -32,7 +32,7 @@ class _TicketState extends State<Ticket> {
 String LicenseDate;
   List TrafficList = List();
   getAllTraffic() async {
-    var url = "https://192.168.10.31/flutter_app/AllTraffic.php";
+    var url = "https://10.0.2.2/flutter_app/AllTraffic.php";
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
         (X509Certificate cert, localhost, int port) => true;
@@ -66,7 +66,7 @@ String LicenseDate;
   List TicketsList = List();
 Future getTicketType() async
 {
-  var url = "https://192.168.10.31/flutter_app/AllTickets.php";
+  var url = "https://10.0.2.2/flutter_app/AllTickets.php";
   final ioc = new HttpClient();
   ioc.badCertificateCallback =
       (X509Certificate cert, localhost, int port) => true;

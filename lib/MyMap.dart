@@ -6,8 +6,7 @@ import 'Profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
-import 'package:permission/permission.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 class MyMap extends StatefulWidget{
   @override
   _MyMapState createState() => _MyMapState();
@@ -115,7 +114,7 @@ return FloatingActionButton(
   @override
   Widget build(BuildContext context) {
     int _currentIndex_=0;
-    // TODO: implement build
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Map", style: TextStyle(  letterSpacing: 2.0, fontFamily: 'Pacifico-Regular',),),
@@ -128,7 +127,8 @@ return FloatingActionButton(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
               target:  _center,
-              zoom: 11.0,
+              zoom: 13.0,
+              //zoomGestureEnabled:true,
             ),
             mapType: _currentMapType,
             markers: _Markers,
@@ -151,11 +151,6 @@ return FloatingActionButton(
         ],
 
       ),
-
-
-
-
-
 
 
 

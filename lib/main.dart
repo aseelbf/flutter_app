@@ -30,11 +30,13 @@ import 'License.dart';
 
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   var SignedIn = preferences.getString('SignedIn');
 
   runApp(MaterialApp(
+
     home: SignedIn == null ? Home() : MyMap(),
     routes: {
       '/home': (context) => Home(),
@@ -52,10 +54,12 @@ void main() async {
       '/ticket': (context) => Ticket(),
       '/license': (context) => License(),
     },
+    initialRoute: '/home',
   ));
 }
 
 class Home extends StatefulWidget {
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -85,7 +89,7 @@ class _HomeState extends State<Home> {
 
   //**********************************************
   Future Search() async {
-    var url = "https://192.168.10.31/flutter_app/Search.php";
+    var url = "https://10.0.2.2/flutter_app/Search.php";
 
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
@@ -218,7 +222,7 @@ class _HomeState extends State<Home> {
 //********************
   List usersList = List();
   getAllUsers() async {
-    var url = "https://192.168.10.31/flutter_app/Allusers.php";
+   String url = "https://10.0.2.2/flutter_app/Allusers.php";
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
         (X509Certificate cert, localhost, int port) => true;
@@ -266,6 +270,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
           leading: ImageIcon(AssetImage("assets/images/search3.png")),
           title: RichText(
@@ -383,7 +388,8 @@ class _HomeState extends State<Home> {
                   print("Opened");
                   if (SignedIn == 'T') {
                     print("I am the ID " + ID);
-                    var url = "https://192.168.10.31/flutter_app/ticket.php";
+
+                    var url = "https://10.0.2.2/flutter_app/ticket.php";
 
                     final ioc = new HttpClient();
                     ioc.badCertificateCallback =

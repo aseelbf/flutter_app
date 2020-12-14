@@ -79,7 +79,7 @@ class _signUPState extends State<signUP>
   {
     print("hi");
     //var url = "https://10.0.2.1//flutter_app/GP_database.php";
-    var url = "https://192.168.10.31/flutter_app/GP_database.php";
+    var url = "https://10.0.2.2/flutter_app/GP_database.php";
     final ioc = new HttpClient();
     ioc.badCertificateCallback =
         (X509Certificate cert, localhost, int port) => true;
@@ -306,7 +306,7 @@ class _signUPState extends State<signUP>
 //    If all data are correct then save data to out variables
 
 
-      var url = "https://192.168.10.31/flutter_app/Authenticate.php";
+      var url = "https://10.0.2.2/flutter_app/Authenticate.php";
       final ioc = new HttpClient();
       ioc.badCertificateCallback =
           (X509Certificate cert, localhost, int port) => true;
