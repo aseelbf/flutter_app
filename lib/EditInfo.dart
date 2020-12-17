@@ -11,6 +11,7 @@ class _EditInfoState extends State<EditInfo> {
   String username;
   String car;
   String mobile;
+  String ID;
 
   Future getInfo() async
   {
@@ -20,6 +21,7 @@ class _EditInfoState extends State<EditInfo> {
       username=preferences.getString('username');
       mobile = preferences.getString('mobilenumber');
       car = preferences.getString('carnumber');
+      ID=preferences.getString('ID');
       print("These are your information from getInfo Function in Edit page "+mobile+" "+car);
     });
   }
@@ -30,6 +32,8 @@ class _EditInfoState extends State<EditInfo> {
     preferences.setString('mobilenumber', mobile);
     preferences.setString('carnumber', car);
     preferences.setString('username', username);
+    preferences.setString('ID', ID);
+
   }
 
   @override
@@ -47,6 +51,19 @@ class _EditInfoState extends State<EditInfo> {
         body: Container(
           padding: EdgeInsets.all(10),
           child: ListView(children: <Widget>[
+            ListTile(
+              leading: IconButton(
+
+                icon: Icon(Icons.edit),
+                onPressed: ()
+                {
+                  KeepInfo();
+                  //Navigator.pushNamed(context,'/editEmail');
+                }
+                ,),
+              title: Text("Email"),
+              subtitle: username==null?null: Text(username),
+            ),
             ListTile(
               leading: IconButton(
 

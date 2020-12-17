@@ -15,6 +15,7 @@ class _TicketState extends State<Ticket> {
   bool TicketFlag = false;
   String Title = "", TicketId, TicketType , Description="Description: ";
   String ticketDate;
+  String FullName;
 
   Future getInfo() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -44,9 +45,10 @@ String LicenseDate;
         TrafficList = json.decode(response.body);
         for (int i = 0; i < TrafficList.length; i++) {
           if (TrafficList[i]['ID'] == ID) {
+                FullName=TrafficList[i]['FullName'];
                 TicketId=TrafficList[i]['ticketId'];
                 ticketDate=TrafficList[i]['ticketDate'].toString();
-                //LicenseDate=TrafficList[i]['LicenseDate'].toString();
+
             break;
           } else
             {
@@ -57,7 +59,6 @@ String LicenseDate;
       });
 
     }
-
     return TrafficList;
 
   }

@@ -1,39 +1,38 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class EditPhone extends StatefulWidget {
+class EditEmail extends StatefulWidget {
   @override
-  _EditPhoneState createState() => _EditPhoneState();
+  _EditEmailState createState() => _EditEmailState();
 }
 
-class _EditPhoneState extends State<EditPhone> {
+class _EditEmailState extends State<EditEmail> {
   String username;
-  String car;
-  String mobile;
-
-  TextEditingController MobileController = TextEditingController();
+  String ID;
+  String SignedIn;
+  TextEditingController EmailController = TextEditingController();
 
   Future getInfo() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
-      mobile = preferences.getString('mobilenumber');
-      car = preferences.getString('carnumber');
+
       username = preferences.getString('username');
-      print("These are your information from getInfo Function in Edit phone " +
-          mobile +
-          " " +
-          car);
+      ID=preferences.getString('ID');
+      SignedIn=preferences.getString('SignedIn');
+
     });
   }
 
   @override
   void initState() {
     super.initState();
-    getInfo();
+    setState(() {
+      getInfo();
+    });
+
   }
 
   @override
@@ -52,11 +51,11 @@ class _EditPhoneState extends State<EditPhone> {
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.fromLTRB(16.0, 75.0, 0.0, 0.0),
-                  child: mobile == null
+                  child: username == null
                       ? null
-                      : Text(mobile,
+                      : Text(username,
                           style: TextStyle(
-                              fontSize: 30.0, fontWeight: FontWeight.bold)),
+                              fontSize: 25.0, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -66,16 +65,16 @@ class _EditPhoneState extends State<EditPhone> {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Enter your new phone number:',
+                  'Enter your new Email:',
                   style: TextStyle(
                       fontSize: 25.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.blueGrey),
                 ),
                 TextField(
-                  controller: MobileController,
+                  controller: EmailController,
                   decoration: InputDecoration(
-                      labelText: 'Ex:0599123456',
+                      labelText: 'Ex:abc@company.com',
                       labelStyle: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.grey),
                       focusedBorder: UnderlineInputBorder(
@@ -92,33 +91,35 @@ class _EditPhoneState extends State<EditPhone> {
                     child: FlatButton(
                         onPressed: () async {
                           var url =
-                              "https://10.0.2.2/flutter_app/EditPhone.php";
+                              "https://10.0.2.2/flutter_app/EditEmail.php";
                           final ioc = new HttpClient();
                           ioc.badCertificateCallback =
                               (X509Certificate cert, localhost, int port) =>
                                   true;
                           final http = new IOClient(ioc);
                           http.post(Uri.parse(url), body: {
-                            'username': username,
-                            'mobilenumber': MobileController.text,
+                            'ID': ID,
+                            'username': EmailController.text,
                           });
                           //*******************
-                          print("I am number from controller "+ MobileController.text);
-
-
+                          print("I am email from controller "+ EmailController.text);
                           Fluttertoast.showToast(
-                              msg: "Phone number changed successfully !",
+                              msg: " Email changed successfully !",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.CENTER,
                               timeInSecForIosWeb: 1,
                               backgroundColor: Colors.green,
                               textColor: Colors.white,
                               fontSize: 16.0);
-                              Navigator.pushNamed(context, '/Person').then((value) => null);
+                              print("I am flag in edit Email page after editing "+SignedIn);
+                          SharedPreferences preferences = await SharedPreferences.getInstance();
+                          SignedIn="T";
+                          preferences.setString('SignedIn', SignedIn);
+                          Navigator.pushNamed(context, '/Person');
                         },
                         child: Center(
                             child: Text(
-                          'Update phone number',
+                          'Update Email',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ))),

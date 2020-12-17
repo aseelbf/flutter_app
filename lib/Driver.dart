@@ -1,8 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutterapp/Profile.dart';
-import 'package:flutterapp/main.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert' ;
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +19,8 @@ class _DriverState extends State<Driver> {
   String car="";
   String phone="";
   String SignedIn="";
+  String ID="";
+  String FullName="";
 
   Future getInfo() async
   {
@@ -31,9 +30,41 @@ class _DriverState extends State<Driver> {
     {
       car= preferences.getString('car');
       SignedIn= preferences.getString('SignedIn');
+      ID=preferences.getString('ID');
       print(car + "In getInfo function");
     });
   }
+
+
+
+  List TrafficList = List();
+  getAllTraffic() async {
+    var url = "https://10.0.2.2/flutter_app/AllTraffic.php";
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, localhost, int port) => true;
+    final http = new IOClient(ioc);
+    var response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        TrafficList = json.decode(response.body);
+        for (int i = 0; i < TrafficList.length; i++) {
+          if (TrafficList[i]['ID'] == ID) {
+            FullName = TrafficList[i]['FullName'];
+
+
+            break;
+          }
+        }
+      });
+    }
+    print(FullName);
+    return TrafficList;
+  }
+
+
+
 
 
 
@@ -58,6 +89,7 @@ class _DriverState extends State<Driver> {
           {
             username=usersList[i]['username'];
             phone=usersList[i]['mobilenumber'];
+            ID=usersList[i]['ID'];
             break;
 
           }
@@ -82,6 +114,7 @@ class _DriverState extends State<Driver> {
     super.initState();
     getInfo();
     getAllUsers();
+    getAllTraffic();
 
   }
 
@@ -181,22 +214,15 @@ class _DriverState extends State<Driver> {
                         color: Colors.teal[200],
                         child: ListTile(
                           title: Text(
-                            'Welcome ' + username.toUpperCase()+"!",
+                            'You can see ' + FullName.toUpperCase()+" information below",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 30,
+                              fontSize: 20,
                               color: Colors.white,
                             ),
                           ),
-                          subtitle: Text(
-                            'You can see your information ! ',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white70,
-                            ),
-                          ),
+
                         ),
                       ),
                     ),
@@ -217,7 +243,7 @@ class _DriverState extends State<Driver> {
                         ),
                       ),
 
-                      subtitle:  Text(username ,
+                      subtitle:  Text(FullName ,
 
                         style: TextStyle(
                             fontSize: 18,

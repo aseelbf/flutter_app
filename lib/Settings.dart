@@ -18,7 +18,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String mobile;
   String car;
   String password;
-
+  String ID;
+  String SignedIn;
+  String FullName;
 
   Future getInfo() async
   {
@@ -27,7 +29,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
      mobile= preferences.getString('mobilenumber');
      car=preferences.getString('carnumber');
      password=preferences.getString('password');
-      print("I get your info "+username +', '+ mobile +', '+ car+' ,'+ password);
+      ID=preferences.getString('ID');
+      SignedIn=preferences.getString('SignedIn');
+      FullName=preferences.getString('FullName');
+      print("I get your info in settings "+FullName +', '+ mobile +', '+ car+' ,'+ password);
 
   }
 
@@ -65,9 +70,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onTap:() async
                   {
                     SharedPreferences preferences=await SharedPreferences.getInstance();
+                    preferences.setString('ID', ID);
                     preferences.setString('mobilenumber', mobile);
                     preferences.setString('carnumber', car);
                     preferences.setString('username', username);
+                    preferences.setString('FullName', FullName);
+                    preferences.setString('SignedIn', SignedIn);
                     print("I took username from settings to personal settings "+ username);
                     Navigator.pushNamed(context,'/edit');
                   }, leading: Icon(Icons.person)
@@ -89,6 +97,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   {
                    Logout();
                   }, leading: Icon(Icons.exit_to_app)),
+
+
+
             ],
           ),
 

@@ -155,9 +155,9 @@ preferences.setString('password', passw.text);
         //======================================================================
         new TextFormField(
         controller: usern,
-          decoration: const InputDecoration( icon: Icon(Icons.person),
+          decoration: const InputDecoration( icon: Icon(Icons.email),
               //hintText: 'What do people call you?',
-              labelText: 'Name *'),
+              labelText: 'Email address'),
 
           keyboardType: TextInputType.text,
           validator: validateName,
@@ -246,8 +246,8 @@ preferences.setString('password', passw.text);
   }
   //======================================================================
   String validateName(String value) {
-    if (value.length < 3)
-      return 'Name must be more than 2 characters';
+    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value))
+      return 'Enter valid email';
     else
       return null;
   }

@@ -27,6 +27,7 @@ import 'EditPhone.dart';
 import 'EditCar.dart';
 import 'Ticket.dart';
 import 'License.dart';
+import 'EditEmail.dart';
 
 
 void main() async {
@@ -51,6 +52,7 @@ void main() async {
       '/edit': (context) => EditInfo(),
       '/EditMobile': (context) => EditPhone(),
       '/EditCar': (context) => EditCar(),
+      '/editEmail': (context) => EditEmail(),
       '/ticket': (context) => Ticket(),
       '/license': (context) => License(),
     },
@@ -65,13 +67,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String SignedIn = "Empty";
+  String SignedIn ="empty";
   String userr;
   String username, ID;
   bool TicketFlag;
   String Title;
   String ticketId;
   Color color;
+  String FullName;
 
   TextEditingController SearchController = TextEditingController();
 //*********************************************************************
@@ -79,12 +82,15 @@ class _HomeState extends State<Home> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     SignedIn = preferences.getString('SignedIn');
     username = preferences.getString('username');
+    FullName = preferences.getString('FullName');
+    print(FullName);
   }
 //******************************************************
 
   Future keepFlag() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString('SignedIn', SignedIn);
+    preferences.setString('FullName', FullName);
   }
 
   //**********************************************

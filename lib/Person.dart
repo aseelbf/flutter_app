@@ -30,14 +30,15 @@ class _PersonState extends State<Person> {
   String phone="";
   String SignedIn="";
   String password="";
-
+  String FullName="";
+  String ID="";
   Future getUsername() async
   {
     SharedPreferences preferences=await SharedPreferences.getInstance();
 
     setState(()
     {
-
+      FullName=preferences.getString('FullName');
       username= preferences.getString('username');
       SignedIn= preferences.getString('SignedIn');
       password=preferences.getString('password');
@@ -81,6 +82,7 @@ class _PersonState extends State<Person> {
               print("Hi "+ usersList[i]['username'] +", Your flag is "+SignedIn);
               car=usersList[i]['carnumber'];
               phone=usersList[i]['mobilenumber'];
+              ID=usersList[i]['ID'];
               break;
 
             }
@@ -99,18 +101,45 @@ class _PersonState extends State<Person> {
   }
 
 
+
+  List TrafficList = List();
+  getAllTraffic() async {
+    var url = "https://10.0.2.2/flutter_app/AllTraffic.php";
+    final ioc = new HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, localhost, int port) => true;
+    final http = new IOClient(ioc);
+    var response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        TrafficList = json.decode(response.body);
+        for (int i = 0; i < TrafficList.length; i++) {
+          if (TrafficList[i]['ID'] == ID) {
+            FullName = TrafficList[i]['FullName'];
+
+
+            break;
+          }
+        }
+      });
+    }
+    print(FullName);
+    return TrafficList;
+  }
   @override
   void initState() {
 
     super.initState();
-     getUsername();
-     getAllUsers();
+    setState(()
+    {
+      getUsername().then((value) => null);
+      getAllUsers().then((value) => null);
+      getAllTraffic().then((value) => null);;
+    });
+
 
   }
-
-
-
-
 
 
   void handleClick(String value) async{
@@ -121,9 +150,11 @@ class _PersonState extends State<Person> {
       case 'Settings':
         SharedPreferences preferences=await SharedPreferences.getInstance();
         preferences.setString('mobilenumber', phone);
+        preferences.setString('FullName', FullName);
         preferences.setString('carnumber', car);
         preferences.setString('password', password);
         preferences.setString('username', username);
+        preferences.setString('ID',ID);
         Navigator.pushNamed(context,'/Settings');
         break;
     }
@@ -135,7 +166,14 @@ class _PersonState extends State<Person> {
         child: new Scaffold(
         appBar: AppBar(
           leading: new IconButton(icon: new Icon(Icons.arrow_back),
-              onPressed:() { Navigator.of(context).pushNamed('/home');}),
+              onPressed:() async{
+
+              SharedPreferences preferences=await SharedPreferences.getInstance();
+              preferences.setString('FullName', FullName);
+              preferences.setString('SignedIn', SignedIn);
+              Navigator.of(context).pushNamed('/home');
+
+        }),
           backgroundColor: Colors.teal[400],
           title: Text('Your Profile'),
           actions: <Widget>[
@@ -226,11 +264,11 @@ class _PersonState extends State<Person> {
                       color: Colors.teal[200],
                       child: ListTile(
                         title: Text(
-                          'Welcome ' + username.toUpperCase()+"!",
+                          'Welcome ' + FullName.toUpperCase()+"!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 30,
+                            fontSize: 26,
                             color: Colors.white,
                           ),
                         ),
@@ -254,7 +292,7 @@ class _PersonState extends State<Person> {
                   ListTile(
 
                     title: Text(
-                      'Name',
+                      'Email',
                       style: TextStyle(
                         color: Colors.teal,
                         fontSize: 20,

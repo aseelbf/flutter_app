@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Person.dart';
 import 'Profile.dart';
@@ -32,6 +33,9 @@ class _MyMapState extends State<MyMap> {
     super.initState();
     getFlag();
     print ( "I'm your flag in getFlag function in MyMap class : "+ SignedIn);
+    setState(() {
+      _getCurrentLocation();
+    });
 
   }
 
@@ -53,10 +57,25 @@ class _MyMapState extends State<MyMap> {
     controller.animateCamera(CameraUpdate.newCameraPosition(myPosition));
 
   }
+  Position _currentPosition;
+  String _currentAddress;
+  final Geolocator geolocator = Geolocator();
+
+  _getCurrentLocation() {
+    Geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+
+    });
+  }
 
 
 _onMapCreated(GoogleMapController controller)
 {
+
   _controller.complete(controller);
 }
 
@@ -111,9 +130,15 @@ return FloatingActionButton(
 
 
 
-  @override
+
+
+    @override
   Widget build(BuildContext context) {
     int _currentIndex_=0;
+
+
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -121,19 +146,26 @@ return FloatingActionButton(
           backgroundColor: Colors.teal[400]
       ),
 
-      body: Stack(
+      body: Container(
+          height: MediaQuery.of(context).size.height*5.5 / 10,
+          width: MediaQuery.of(context).size.width,
+          child:Stack(
+
         children: <Widget>[
-          GoogleMap(
+          _currentPosition!=null?GoogleMap(
+            trafficEnabled: true,
+            myLocationButtonEnabled: true,
+            myLocationEnabled: true,
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
-              target:  _center,
+              target:LatLng(_currentPosition.latitude,_currentPosition.longitude),
               zoom: 13.0,
               //zoomGestureEnabled:true,
             ),
             mapType: _currentMapType,
             markers: _Markers,
             onCameraMove: _onCameraMove,
-          ),
+          ):Center(child:CircularProgressIndicator()),
           Padding(
             padding: EdgeInsets.all(16.0),
             child:
@@ -141,16 +173,15 @@ return FloatingActionButton(
             child: Column(
               children: <Widget> [
                 button(_onTypePressed, Icons.map ),
-                SizedBox(height:16.0),
+                SizedBox(height:25.0),
                 button(_onMarkerPressed, Icons.add_location),
-                SizedBox(height:16.0),
-                button(_goToMyPosition, Icons.location_searching),
+
               ],
             ),)
           ),
         ],
 
-      ),
+      )),
 
 
 

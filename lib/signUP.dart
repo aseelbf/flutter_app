@@ -178,12 +178,12 @@ class _signUPState extends State<signUP>
               fontWeight: FontWeight.w500,
               fontSize: 30),*/
 
-          decoration: const InputDecoration( icon: Icon(Icons.person),
+          decoration: const InputDecoration( icon: Icon(Icons.email),
               //hintStyle: TextStyle(height:7, fontWeight: FontWeight.bold),
               hintText: 'What do people call you?',
               labelText: 'Name *'),
 
-          keyboardType: TextInputType.text,
+          keyboardType: TextInputType.emailAddress,
           validator: validateName,
           onSaved: (String val) {
             _name = val;
@@ -261,8 +261,8 @@ class _signUPState extends State<signUP>
   }
   //======================================================================
   String validateName(String value) {
-    if (value.length < 3)
-      return 'Name must be more than 2 charater';
+    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value))
+      return 'Enter valid email';
     else
       return null;
   }
