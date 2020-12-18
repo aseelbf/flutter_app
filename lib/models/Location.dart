@@ -5,6 +5,6 @@ class Location
 
   Location({this.lat, this.lon});
   Location.fromJson(Map<dynamic, dynamic> parsedJson )
-  :lat=parsedJson['lat'],
-  lon=parsedJson['lon'];
+  :lat=parsedJson['lat'].toDouble(),
+  lon=parsedJson['lon'].toDouble();
 }

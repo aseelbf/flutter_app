@@ -78,6 +78,7 @@ flutter:
     - assets/images/search2.png
     - assets/images/search3.png
     -  assets/images/man.png
+    - assets/images/
   fonts:
     - family: Raleway
       fonts:

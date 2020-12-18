@@ -1,12 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutterapp/Services/markers_service.dart';
+import 'package:flutterapp/Services/places_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'Person.dart';
 import 'Profile.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
+
+import 'models/Place.dart';
 
 class MyMap extends StatefulWidget{
   @override
@@ -27,17 +33,6 @@ class _MyMapState extends State<MyMap> {
   }
 
 
-  @override
-  void initState() {
-
-    super.initState();
-    getFlag();
-    print ( "I'm your flag in getFlag function in MyMap class : "+ SignedIn);
-    setState(() {
-      _getCurrentLocation();
-    });
-
-  }
 
   Completer <GoogleMapController> _controller = Completer();
   static const LatLng _center = const LatLng(32.215996, 35.259131);
@@ -57,26 +52,13 @@ class _MyMapState extends State<MyMap> {
     controller.animateCamera(CameraUpdate.newCameraPosition(myPosition));
 
   }
-  Position _currentPosition;
-  String _currentAddress;
-  final Geolocator geolocator = Geolocator();
 
-  _getCurrentLocation() {
-    Geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-      });
-
-    });
-  }
 
 
 _onMapCreated(GoogleMapController controller)
 {
+  _getPlacesList(32.164750,35.285340);
 
-  _controller.complete(controller);
 }
 
 _onCameraMove(CameraPosition position)
@@ -128,111 +110,156 @@ return FloatingActionButton(
 
   }
 
+  Position _currentPosition;
+  final Geolocator geolocator = Geolocator();
 
+  _getCurrentLocation() {
+    Geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+
+    });
+  }
+  List<Place> places=List();
+  final PlacesService Pservice=PlacesService();
+  _getPlacesList(double lat,double lon) async
+  {
+    places=await Pservice.getPlaces(lat, lon);
+
+
+  }
+void CheckCurrentPosition()
+{
+  setState(() {
+    _currentPosition!=null? print(_currentPosition.latitude.toString() +' , ' +_currentPosition.longitude.toString())
+        : print("current position is null");
+  });
+
+}
+
+  @override
+  void initState() {
+
+    super.initState();
+    getFlag();
+    print ( "I'm your flag in getFlag function in MyMap class : "+ SignedIn);
+    setState(() {
+     // _getCurrentLocation();
+    _getPlacesList(32.164750,35.285340);
+
+    });
+
+  }
 
 
 
     @override
   Widget build(BuildContext context) {
-    int _currentIndex_=0;
+final markserService=MarkerService();
 
-
-
-
+setState(() {
+  CheckCurrentPosition();
+ _getPlacesList(32.164750,35.285340);
+});
+var markers=(places!=null)? markserService.getMarkers(places):List<Marker>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Map", style: TextStyle(  letterSpacing: 2.0, fontFamily: 'Pacifico-Regular',),),
-          backgroundColor: Colors.teal[400]
-      ),
-
-      body: Container(
-          height: MediaQuery.of(context).size.height*5.5 / 10,
-          width: MediaQuery.of(context).size.width,
-          child:Stack(
+      body: Column(
 
         children: <Widget>[
-          _currentPosition!=null?GoogleMap(
-            trafficEnabled: true,
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target:LatLng(_currentPosition.latitude,_currentPosition.longitude),
-              zoom: 13.0,
-              //zoomGestureEnabled:true,
-            ),
-            mapType: _currentMapType,
-            markers: _Markers,
-            onCameraMove: _onCameraMove,
-          ):Center(child:CircularProgressIndicator()),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child:
-            Align(alignment: Alignment.topRight,
-            child: Column(
-              children: <Widget> [
-                button(_onTypePressed, Icons.map ),
-                SizedBox(height:25.0),
-                button(_onMarkerPressed, Icons.add_location),
+          Stack(
+            children: <Widget>[
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height*5.5/10,
+                  child:GoogleMap(
+                    trafficEnabled: true,
+                  //  myLocationButtonEnabled: true,
+                    //myLocationEnabled: true,
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target:LatLng(32.164750,35.285340),
+                      zoom: 13.0,
+                      //zoomGestureEnabled:true,
+                    ),
+                    mapType: _currentMapType,
+                    markers: Set<Marker>.of(markers),
+                    onCameraMove: _onCameraMove,
+                  ),
+                ),
 
-              ],
-            ),)
-          ),
-        ],
+                //Expanded(child:ListView.builder(itemBuilder: ,itemCount: places.length,)),
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child:
+                  Align(alignment: Alignment.topRight,
+                  child: Column(
+                    children: <Widget> [
+                      button(_onTypePressed, Icons.map ),
+                      SizedBox(height:25.0),
+                      button(_onMarkerPressed, Icons.add_location),
 
-      )),
+                    ],
+                  ),)
+                ),
+               ] ),
+
+          SizedBox(height:10.0),
+           places!=null?     Expanded(
+
+                  child: ListView.builder(itemBuilder: (context,index)
+                  {
+
+                    return Card( color:Colors.white,child: ListTile(title:places[index].poi.name!=null? Text(places[index].poi.name):null,
+                      subtitle:Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>
+                      [
+                        Row(children: <Widget>
+                        [
+                          RatingBarIndicator(
+                            rating: places[index].score,
+                            itemBuilder: (context,index)=> Icon(Icons.star,color:Colors.amberAccent),
+                            itemCount: 5,
+                            itemSize: 15.0,
+                            direction: Axis.horizontal,
+                          ),
+                        ],),
+
+                            Text((places[index].address.streetName!=null?places[index].address.streetName:"unknown")
+                                +', '+(places[index].address.municipality!=null?places[index].address.municipality:" "))
+                      ],)
 
 
 
-     bottomNavigationBar: CurvedNavigationBar(
-      animationCurve: Curves.decelerate,
-      color: Colors.teal[400],
-      backgroundColor: Colors.grey[300],
-      animationDuration: Duration(
-          milliseconds: 100
-      ),
-      height: 60,
-
-      index: _currentIndex_,
-      items: <Widget> [
-        IconButton(icon: Icon(Icons.location_on)  ,iconSize:35, focusColor: Colors.grey[300],
-            onPressed:()
-            {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MyMap()));
-
-            }),
+                      ,trailing: IconButton(icon: Icon(Icons.directions), color: Theme.of(context).primaryColor,
+                      onPressed: ()
+                        {
+                          _launchMapsUrl(places[index].location.lat, places[index].location.lon);
+                        },)
+                      ,),);
+                     }
+                  ,itemCount: places.length,),
+                ):Center(child:CircularProgressIndicator()),
 
 
-        IconButton(icon: Icon(Icons.home), iconSize:35, focusColor: Colors.grey[300],
-            onPressed:()
-            {
-              Navigator.pushNamed(context,'/home');
-
-            }
-           ),
-
-        IconButton(icon: Icon(Icons.person_outline), iconSize:35, focusColor: Colors.grey[300],
-            onPressed:()
-            {
-              print(SignedIn);
-              if (SignedIn=="T")
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Person()));
-              else
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
-
-            }),
-
-      ],
-      onTap: (index){
-        setState(()
-        {
-          _currentIndex_=index;
-
-        } );
-      },
-
-    ),
+        ],),
     );
+
+
+
+
+
+  }
+  void _launchMapsUrl(double lat,double lng) async
+  {
+    final url='https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    if (await canLaunch(url))
+      await launch(url);
+    else throw'Could not launch $url';
+
   }
 }
