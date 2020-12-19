@@ -180,8 +180,8 @@ class _signUPState extends State<signUP>
 
           decoration: const InputDecoration( icon: Icon(Icons.email),
               //hintStyle: TextStyle(height:7, fontWeight: FontWeight.bold),
-              hintText: 'What do people call you?',
-              labelText: 'Name *'),
+              hintText: 'abc@company.com',
+              labelText: 'Email *'),
 
           keyboardType: TextInputType.emailAddress,
           validator: validateName,

@@ -1,17 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutterapp/Services/gas_stations_service.dart';
 import 'package:flutterapp/Services/markers_service.dart';
 import 'package:flutterapp/Services/places_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'Person.dart';
-import 'Profile.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
-
 import 'models/Place.dart';
 
 class MyMap extends StatefulWidget{
@@ -39,19 +36,9 @@ class _MyMapState extends State<MyMap> {
   final Set<Marker>  _Markers ={};
   LatLng _lastMapPos= _center;
   MapType _currentMapType = MapType.normal;
-  static final CameraPosition myPosition = CameraPosition(
-    bearing: 192.833 ,
-    target: LatLng(32.215996, 35.259131),
-    tilt: 59.440,
-    zoom: 11.0,
-  );
 
-  Future <void> _goToMyPosition() async
-  {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(myPosition));
 
-  }
+
 
 
 
@@ -81,6 +68,47 @@ return FloatingActionButton(
 );
  }
 
+  Widget smallButton (IconData icon)
+  {
+
+    return Container(
+      width: 35,
+      height: 35,
+      child: FittedBox(
+
+        child: FloatingActionButton(
+
+          heroTag: null,
+
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          backgroundColor: Colors.teal[400],
+
+          child: Icon(
+            icon,
+            size: 30.0,
+          ),
+
+        ),
+      ),
+    );
+  }
+
+  _onParkPressed()
+  {
+    setState(() {
+     whatPressed=0;
+     keepPressed();
+
+    });
+  }
+  _onGasStationPressed()
+  {
+    setState(() {
+      whatPressed=1;
+      keepPressed();
+    });
+  }
+
 
   _onTypePressed()
   {
@@ -90,47 +118,25 @@ return FloatingActionButton(
     });
   }
 
-  _onMarkerPressed()
-  {
-    setState(() {
-      _Markers.add(
-          Marker(
-        markerId: MarkerId(_lastMapPos.toString()),
-            position: _lastMapPos,
-            infoWindow: InfoWindow(
-              title: 'title',
-              snippet: 'snippet'
-            ),
-              icon: BitmapDescriptor.defaultMarker,
-
-
-      ));
-    }
-    );
-
-  }
 
   Position _currentPosition;
   final Geolocator geolocator = Geolocator();
 
-  _getCurrentLocation() {
-    Geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-      });
-
-    });
-  }
   List<Place> places=List();
   final PlacesService Pservice=PlacesService();
   _getPlacesList(double lat,double lon) async
   {
     places=await Pservice.getPlaces(lat, lon);
 
+  }
+  List<Place> gasStations=List();
+  final GasService _gasService=GasService();
+  _getGasStationsList(double lat,double lon) async
+  {
+    gasStations=await _gasService.getPlaces(lat, lon);
 
   }
+
 void CheckCurrentPosition()
 {
   setState(() {
@@ -138,6 +144,11 @@ void CheckCurrentPosition()
         : print("current position is null");
   });
 
+}
+Future keepPressed()async
+{
+  SharedPreferences preferences=await SharedPreferences.getInstance();
+  preferences.setInt('whatPressed', whatPressed);
 }
 
   @override
@@ -149,11 +160,14 @@ void CheckCurrentPosition()
     setState(() {
      // _getCurrentLocation();
     _getPlacesList(32.164750,35.285340);
+    _getGasStationsList(32.164750,35.285340);
 
     });
 
   }
 
+
+int whatPressed=10;
 
 
     @override
@@ -163,9 +177,12 @@ final markserService=MarkerService();
 setState(() {
   CheckCurrentPosition();
  _getPlacesList(32.164750,35.285340);
+  _getGasStationsList(32.164750,35.285340);
+  places= whatPressed==1?gasStations:places;
+
 });
 var markers=(places!=null)? markserService.getMarkers(places):List<Marker>();
-
+var gasStationsMarkers=(places==gasStations)? markserService.getMarkers(gasStations):List<Marker>();
     return Scaffold(
       body: Column(
 
@@ -174,41 +191,42 @@ var markers=(places!=null)? markserService.getMarkers(places):List<Marker>();
             children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height*5.5/10,
+                  height: whatPressed==10?MediaQuery.of(context).size.height*9/10:MediaQuery.of(context).size.height*6/10,
                   child:GoogleMap(
                     trafficEnabled: true,
-                  //  myLocationButtonEnabled: true,
-                    //myLocationEnabled: true,
+                   myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
                     onMapCreated: _onMapCreated,
                     initialCameraPosition: CameraPosition(
                       target:LatLng(32.164750,35.285340),
-                      zoom: 13.0,
-                      //zoomGestureEnabled:true,
+                      zoom: 11.0,
                     ),
                     mapType: _currentMapType,
-                    markers: Set<Marker>.of(markers),
+                    markers:whatPressed!=10? Set<Marker>.of(markers):Set<Marker>.of(List<Marker>()),
                     onCameraMove: _onCameraMove,
                   ),
                 ),
 
-                //Expanded(child:ListView.builder(itemBuilder: ,itemCount: places.length,)),
+
                 Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(13.0),
                   child:
                   Align(alignment: Alignment.topRight,
                   child: Column(
                     children: <Widget> [
+                      SizedBox(height:60.0),
                       button(_onTypePressed, Icons.map ),
-                      SizedBox(height:25.0),
-                      button(_onMarkerPressed, Icons.add_location),
-
+                      SizedBox(height:15.0),
+                      button(_onParkPressed, Icons.local_parking),
+                      SizedBox(height:15.0),
+                      button(_onGasStationPressed, Icons.local_gas_station),
                     ],
                   ),)
                 ),
                ] ),
 
-          SizedBox(height:10.0),
-           places!=null?     Expanded(
+          whatPressed==10? SizedBox(height:10.0):Container(height:0.0),
+           places!=null&&whatPressed!=10?     Expanded(
 
                   child: ListView.builder(itemBuilder: (context,index)
                   {
@@ -218,7 +236,7 @@ var markers=(places!=null)? markserService.getMarkers(places):List<Marker>();
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>
                       [
-                        Row(children: <Widget>
+                       /* Row(children: <Widget>
                         [
                           RatingBarIndicator(
                             rating: places[index].score,
@@ -228,10 +246,13 @@ var markers=(places!=null)? markserService.getMarkers(places):List<Marker>();
                             direction: Axis.horizontal,
                           ),
                         ],),
-
+*/
                             Text((places[index].address.streetName!=null?places[index].address.streetName:"unknown")
-                                +', '+(places[index].address.municipality!=null?places[index].address.municipality:" "))
-                      ],)
+                                +', '+(places[index].address.municipality!=null?places[index].address.municipality:" ")),
+                          SizedBox(height:15.0),
+
+                          Text(places[index].dist.toString().substring(0,6)+"m far from you"),   ],
+                      )
 
 
 
@@ -243,7 +264,16 @@ var markers=(places!=null)? markserService.getMarkers(places):List<Marker>();
                       ,),);
                      }
                   ,itemCount: places.length,),
-                ):Center(child:CircularProgressIndicator()),
+                ):Row(
+             children: [
+              SizedBox(width:5),
+             smallButton(Icons.local_parking ),
+             Text(' : Find near parking lots' ,style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
+               SizedBox(width:25),
+               smallButton(Icons.local_gas_station ),
+               Text(' : Find near gas stations' ,style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
+
+             ],)//Center(child:CircularProgressIndicator()),
 
 
         ],),

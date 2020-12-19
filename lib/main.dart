@@ -75,6 +75,7 @@ class _HomeState extends State<Home> {
   String ticketId;
   Color color;
   String FullName;
+  int whatPressed;
 
   TextEditingController SearchController = TextEditingController();
 //*********************************************************************
@@ -83,6 +84,7 @@ class _HomeState extends State<Home> {
     SignedIn = preferences.getString('SignedIn');
     username = preferences.getString('username');
     FullName = preferences.getString('FullName');
+    whatPressed=preferences.getInt('whatPressed');
     print(FullName);
   }
 //******************************************************
@@ -91,6 +93,7 @@ class _HomeState extends State<Home> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString('SignedIn', SignedIn);
     preferences.setString('FullName', FullName);
+    preferences.setInt('whatPressed',whatPressed);
   }
 
   //**********************************************

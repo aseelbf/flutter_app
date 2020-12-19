@@ -8,9 +8,10 @@ class MarkerService {
 
     places.forEach((place){
       Marker marker = Marker(
+
           markerId: MarkerId(place.poi.name),
           draggable: false,
-          infoWindow: InfoWindow(title: place.poi.name, snippet: place.dist.toString().substring(0,4)),
+          infoWindow: InfoWindow(title: place.poi.name, snippet: place.dist.toString().substring(0,6)+"m"),
           position: LatLng(place.location.lat, place.location.lon)
       );
 
